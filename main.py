@@ -2,9 +2,9 @@ import requests
 #from twilio.rest import Client
 import smtplib
 import os
-from dotenv import load_dotenv
+#from dotenv import load_dotenv
 
-load_dotenv()
+#load_dotenv()
 api_key = os.environ.get("OWM_API_KEY")
 url = r"https://api.openweathermap.org/data/2.5/weather"
 endpoint = r"https://api.openweathermap.org/data/2.5/forecast"
