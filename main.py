@@ -1,38 +1,45 @@
-# To run and test the code you need to update 4 places:
-# 1. Change MY_EMAIL/MY_PASSWORD to your own details.
-# 2. Go to your email provider and make it allow less secure apps.
-# 3. Update the SMTP ADDRESS to match your email provider.
-# 4. Update birthdays.csv to contain today's month and day.
-# See the solution video in the 100 Days of Python Course for explainations.
-
-
-from datetime import datetime
-import pandas
-import random
+import requests
+#from twilio.rest import Client
 import smtplib
 import os
+from dotenv import load_dotenv
 
-# import os and use it to get the Github repository secrets
-MY_EMAIL = os.environ.get("MY_EMAIL")
-MY_PASSWORD = os.environ.get("MY_PASSWORD")
+load_dotenv()
+#api_key = "32b979abeee9f96bf2d617aebefa2b7c"
+api_key = os.environ.get("OWM_API_KEY")
+url = r"https://api.openweathermap.org/data/2.5/weather"
+endpoint = r"https://api.openweathermap.org/data/2.5/forecast"
+my_email = "alejandro26hd.backup@gmail.com"
+password = "apexgzmoexuuxmqp"
 
-today = datetime.now()
-today_tuple = (today.month, today.day)
+weather_parameters = {
+    "lat"   : 20.027466,
+    "lon"   : -96.649757,
+    "appid" : api_key,
+    "cnt"   : 4
 
-data = pandas.read_csv("birthdays.csv")
-birthdays_dict = {(data_row["month"], data_row["day"])                  : data_row for (index, data_row) in data.iterrows()}
-if today_tuple in birthdays_dict:
-    birthday_person = birthdays_dict[today_tuple]
-    file_path = f"letter_templates/letter_{random.randint(1, 3)}.txt"
-    with open(file_path) as letter_file:
-        contents = letter_file.read()
-        contents = contents.replace("[NAME]", birthday_person["name"])
+}
 
-    with smtplib.SMTP("YOUR EMAIL PROVIDER SMTP SERVER ADDRESS") as connection:
-        connection.starttls()
-        connection.login(MY_EMAIL, MY_PASSWORD)
+response = requests.get(url=endpoint, params=weather_parameters)
+response.raise_for_status()
+if response.status_code == 200:
+    print("Success!")
+elif response.status_code == 404:
+    print("Not Found.")
+weather_data = response.json()
+#print(weather_data)
+
+will_rain = False
+ids = []
+for i in range(4):
+    ids.append(int(weather_data["list"][i]["weather"][0]["id"]))
+    if ids[i] < 700:
+        will_rain = True
+if will_rain:
+    with smtplib.SMTP("smtp.gmail.com") as connection:
+        connection.starttls()  # Encripted
+        connection.login(user=my_email, password=password)
         connection.sendmail(
-            from_addr=MY_EMAIL,
-            to_addrs=birthday_person["email"],
-            msg=f"Subject:Happy Birthday!\n\n{contents}"
-        )
+            from_addr=my_email,
+            to_addrs="alejandro26hd.backup@gmail.com",
+            msg="Subject: It's going to rain \n\n Bring an umbrella")
