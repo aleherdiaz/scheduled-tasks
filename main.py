@@ -5,12 +5,11 @@ import os
 from dotenv import load_dotenv
 
 load_dotenv()
-#api_key = "32b979abeee9f96bf2d617aebefa2b7c"
 api_key = os.environ.get("OWM_API_KEY")
 url = r"https://api.openweathermap.org/data/2.5/weather"
 endpoint = r"https://api.openweathermap.org/data/2.5/forecast"
-my_email = "alejandro26hd.backup@gmail.com"
-password = "apexgzmoexuuxmqp"
+my_email = os.environ.get("MY_EMAIL")
+password = os.environ.get("MY_PASSWORD")
 
 weather_parameters = {
     "lat"   : 20.027466,
