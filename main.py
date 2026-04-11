@@ -9,8 +9,8 @@ my_email = os.environ.get("MY_EMAIL")
 password = os.environ.get("MY_PASSWORD")
 
 weather_parameters = {
-    "lat"   : 20.027466,
-    "lon"   : -96.649757,
+    "lat"   : 43.826601,
+    "lon"   : -72.849672,
     "appid" : api_key,
     "cnt"   : 4
 
